@@ -1,0 +1,28 @@
+{% extends 'base.html' %} 
+{% load static %} 
+
+{% block head %}
+<link rel="stylesheet" href="{% static 'css/shows/anime-detail.css' %}" />
+{% endblock %} 
+
+{% block content %}
+<section class="show-container">
+  <div class="show-img">
+    <img 
+    src="{% if anime.image_url %}{{ anime.image_url.url }}{% else %}{% static 'images/placeholder.png' %}{% endif %}" 
+    alt="{{ anime.title }} cover" 
+/>
+
+  </div>
+  <div class="anime-details">
+    <h1>{{ anime.title }}</h1>
+    <p><strong>Genre:</strong> {{ anime.genre }}</p>
+    <p><strong>Studio:</strong> {{ anime.studio }}</p>
+    <p><strong>Release Year:</strong> {{ anime.release_year }}</p>
+    <p><strong>Description:</strong> {{ anime.description }}</p>
+    <p><strong>Rating:</strong> ⭐ {{ anime.rating|floatformat:1 }}/10</p>
+    
+    <a href="{% url 'shows-index' %}" class="btn">Back to Shows</a>
+  </div>
+</section>
+{% endblock %}

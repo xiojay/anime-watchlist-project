@@ -1,0 +1,46 @@
+{% extends 'base.html' %} 
+{% load static %} 
+{% block head %}
+<link rel="stylesheet" href="{% static 'css/shows/shows-index.css' %}"/>
+{% endblock %} 
+{% block content %}
+
+<div class="nav-center">
+    <form method="GET" action="{% url 'shows-index' %}" class="search-form">
+        <input type="text" name="q" placeholder="Search shows..." class="search-input">
+        <button type="submit" class="search-btn">🔍</button>
+    </form>
+</div>
+<section class="page-header">
+    {% if query %}
+        <h2>Search results for: "{{ query }}"</h2>
+    {% else %}
+        <h1>Shows List</h1>
+    {% endif %}
+</section>
+<section class="card-container">
+    {% for show in shows %}
+    <div class="card">
+        <div class="card-img-container">
+            {% if show.image_url %}
+            <img src="{{ show.image_url.url }}" alt="{{ show.title }} cover" />
+        {% else %}
+            <img src="{% static 'images/placeholder.png' %}" alt="No image available" />
+        {% endif %}
+            </a>
+        </div>
+        <div class="card-content">
+            <h2 class="card-title">
+                <a href="{% url 'anime-detail' show.id %}">{{ show.title }}</a>
+            </h2>
+            <p>{{ show.genre }}</p>
+            <p>{{ show.release_year }}</p>
+            <div class="rating-badge">
+                ⭐ {{ show.rating|floatformat:1 }}/10
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+</section>
+
+{% endblock %}

@@ -1,0 +1,33 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block head %}
+<link rel="stylesheet" href="{% static 'css/home.css' %}" />
+{% endblock %}
+
+{% block content %}
+
+<section class="hero">
+    <div class="hero-content">
+        <h1 class="app-name">zen</h1>
+        <p class="motto">Track, Explore, Discover</p>
+        <div class="hero-buttons">
+            <a href="/signup" class="btn signup">Sign Up</a>
+            <a href="/signin" class="btn signin">Sign In</a>
+        </div>
+    </div>
+</section>
+
+<section class="anime-section">
+    <div class="anime-container">
+        {% for anime in top_anime %}
+        <div class="anime-card">
+            <img src="{% static anime.image_url %}" alt="{{ anime.title }} cover">
+            <h3>{{ anime.title }}</h3>
+            <p>⭐ {{ anime.rating }}/10</p>
+        </div>
+        {% endfor %}
+    </div>
+</section>
+
+{% endblock %}

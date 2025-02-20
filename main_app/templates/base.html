@@ -1,0 +1,37 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ZeN</title>
+    <link rel="stylesheet" href="{% static 'css/base.css' %}" />
+    {% block head %} 
+    {% endblock %}
+</head>
+<body class="dark-theme">
+
+    <header>
+        <nav class="navbar">
+            <div class="nav-left">
+                <a href="/" class="logo">
+                    <img src="{% static 'images/z-logo.svg' %}" alt="ZeN Logo" class="nav-logo">
+                </a>
+            </div>
+            <div class="nav-right">
+                <ul>
+                    <li><a href="{% url 'shows-index' %}">Shows</a></li>
+                    <li><a href="{% url 'about' %}">About ZeN</a></li>
+                </ul>
+            </div>
+        </nav>
+    </header>
+
+    <main>
+        {% block content %} 
+        {% endblock %}
+    </main>
+
+</body>
+</html>
