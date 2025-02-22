@@ -5,12 +5,13 @@
 {% endblock %} 
 {% block content %}
 
-<div class="nav-center">
+<div class="search-container">
     <form method="GET" action="{% url 'shows-index' %}" class="search-form">
-        <input type="text" name="q" placeholder="Search shows..." class="search-input">
+        <input type="text" name="q" placeholder="search shows..." class="search-input">
         <button type="submit" class="search-btn">🔍</button>
     </form>
 </div>
+
 <section class="page-header">
     {% if query %}
         <h2>Search results for: "{{ query }}"</h2>
@@ -18,16 +19,16 @@
         <h1>Shows List</h1>
     {% endif %}
 </section>
+
 <section class="card-container">
     {% for show in shows %}
     <div class="card">
         <div class="card-img-container">
             {% if show.image_url %}
-            <img src="{{ show.image_url.url }}" alt="{{ show.title }} cover" />
-        {% else %}
-            <img src="{% static 'images/placeholder.png' %}" alt="No image available" />
-        {% endif %}
-            </a>
+                <img src="{{ show.image_url.url }}" alt="{{ show.title }} cover" />
+            {% else %}
+                <img src="{% static 'images/placeholder.png' %}" alt="No image available" />
+            {% endif %}
         </div>
         <div class="card-content">
             <h2 class="card-title">

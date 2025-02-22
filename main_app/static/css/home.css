@@ -71,7 +71,6 @@ main {
     background-color: #666;
 }
 
-/* Anime Showcase Section */
 .anime-section {
     text-align: center;
     padding: 20px;
@@ -82,7 +81,6 @@ main {
     margin-bottom: 15px;
 }
 
-/* Grid container for top anime */
 .anime-container {
     display: flex;
     flex-wrap: wrap;
@@ -91,7 +89,6 @@ main {
     padding: 20px;
 }
 
-/* Individual anime card */
 .anime-card {
     background-color: #222;
     border-radius: 8px;
@@ -117,18 +114,15 @@ main {
     margin-top: 10px;
 }
 
-/* Logo container */
 .logo-container {
     max-width: 375px;
     text-align: center;
 }
 
-/* Anime showcase image */
 .anime-container {
     width: 80%;
 }
 
-/* Home page main image (Bleach placeholder) */
 .home-image {
     width: 300px;
     height: auto;
@@ -137,7 +131,6 @@ main {
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 }
 
-/* Mobile Optimization */
 @media only screen and (max-width: 768px) {
     .anime-container {
         flex-direction: column;

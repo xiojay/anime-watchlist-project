@@ -7,21 +7,27 @@
 
 {% block content %}
 <section class="show-container">
+  <!-- Anime Image -->
   <div class="show-img">
     <img 
-    src="{% if anime.image_url %}{{ anime.image_url.url }}{% else %}{% static 'images/placeholder.png' %}{% endif %}" 
-    alt="{{ anime.title }} cover" 
-/>
-
+      src="{% if anime.image_url %}{{ anime.image_url.url }}{% else %}{% static 'images/placeholder.png' %}{% endif %}" 
+      alt="{{ anime.title }} cover" 
+      class="anime-cover"
+    />
   </div>
+
+  <!-- Anime Details -->
   <div class="anime-details">
     <h1>{{ anime.title }}</h1>
     <p><strong>Genre:</strong> {{ anime.genre }}</p>
     <p><strong>Studio:</strong> {{ anime.studio }}</p>
     <p><strong>Release Year:</strong> {{ anime.release_year }}</p>
     <p><strong>Description:</strong> {{ anime.description }}</p>
-    <p><strong>Rating:</strong> ⭐ {{ anime.rating|floatformat:1 }}/10</p>
     
+    <!-- Rating -->
+    <p><strong>Rating:</strong> <span class="rating-badge">⭐ {{ anime.rating|floatformat:1 }}/10</span></p>
+
+    <!-- Back Button -->
     <a href="{% url 'shows-index' %}" class="btn">Back to Shows</a>
   </div>
 </section>
