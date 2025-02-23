@@ -1,4 +1,5 @@
 from django.db import models
+from django.templatetags.static import static
 from django.contrib.auth.models import User
 
 class Anime(models.Model):
@@ -9,6 +10,18 @@ class Anime(models.Model):
     description = models.TextField()
     rating = models.FloatField(default=0.0) 
     image_url = models.ImageField(upload_to='anime_images/', blank=True, null=True)
+
+    def get_static_image(self):
+        """Returns a static image based on the anime title."""
+        static_image_map = {
+            "Bleachanime": "images/Bleachanime.png",
+            "Death Note": "images/deathnote.png",
+            "Fullmetal Alchemist": "images/Fullmetal Alchemist.png",
+            "Hellsing": "images/Hellsing.svg",
+            "Samurai Champloo": "images/Samurai Champloo.svg",
+            "Vinland Saga": "images/Vinland Saga.svg",
+        }
+        return static(static_image_map.get(self.title, "images/placeholder.png"))
 
     def __str__(self):
         return self.title

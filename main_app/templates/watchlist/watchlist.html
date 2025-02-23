@@ -1,0 +1,36 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<section class="watchlist-container">
+    <h1>My Watchlist</h1>
+
+    {% if watchlist_items %}
+        <ul class="watchlist-list">
+            {% for item in watchlist_items %}
+                <li>
+                    <img src="{{ item.anime.image_url.url }}" alt="{{ item.anime.title }}" class="watchlist-img">
+                    <div class="watchlist-info">
+                        <h2>{{ item.anime.title }}</h2>
+                        <p>Status: <strong>{{ item.get_status_display }}</strong></p>
+
+                        <form method="POST" action="{% url 'add-watchlist' item.anime.id %}">
+                            {% csrf_token %}
+                            <select name="status">
+                                {% for value, label in item.STATUS_CHOICES %}
+                                    <option value="{{ value }}" {% if item.status == value %}selected{% endif %}>{{ label }}</option>
+                                {% endfor %}
+                            </select>
+                            <button type="submit" class="btn-update">Update</button>
+                        </form>
+
+                        <a href="{% url 'remove-watchlist' item.id %}" class="btn-remove">❌ Remove</a>
+                    </div>
+                </li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p>No anime in your watchlist yet.</p>
+    {% endif %}
+</section>
+{% endblock %}

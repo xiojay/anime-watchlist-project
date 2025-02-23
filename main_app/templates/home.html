@@ -22,24 +22,39 @@
 </section>
 
 {% if user.is_authenticated %}
-<section class="featured-shows">
-    <h2>Featured Shows</h2>
-    <div class="anime-container">
-        {% for anime in top_anime %}
-        <div class="anime-card">
-            <a href="{% url 'anime-detail' anime.id %}">
-                <img src="{{ anime.image_url.url }}" alt="{{ anime.title }} cover">
-            </a>
-            <h3>{{ anime.title }}</h3>
-            <p>★ {{ anime.rating|floatformat:1 }}/10</p>
-        </div>
-        {% endfor %}
-    </div>
-</section>
+    <section class="user-watchlist">
+        <h2>Your Watchlist</h2>
+        {% if watchlist_items %}
+            <div class="anime-container">
+                {% for item in watchlist_items %}
+                <div class="anime-card">
+                    <a href="{% url 'anime-detail' item.anime.id %}">
+                        <img src="{% if anime.images_url %}{{ anime.images_utl.url }}{% else %}{% static 'images/placeholder.png' %}{% endif %}" alt="{{ item.anime.title }} cover">
+                    </a>
+                    <h3>{{ item.anime.title }}</h3>
+                    <p>Status: <strong>{{ item.get_status_display }}</strong></p>
+                </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <p>You have no shows in your watchlist yet. <a href="{% url 'shows-index' %}">Browse Shows</a></p>
+        {% endif %}
+    </section>
 {% else %}
-    <p class="auth-prompt">
-        <a href="{% url 'signin' %}">Sign in</a> or <a href="{% url 'signup' %}">Sign up</a> to see featured shows!
-    </p>
+    <section class="featured-shows">
+        <h2>Featured Shows</h2>
+        <div class="anime-container">
+            {% for anime in top_anime %}
+            <div class="anime-card">
+                <a href="{% url 'anime-detail' anime.id %}">
+                    <img src="{{ anime.images.url }}" alt="{{ anime.title }} cover">
+                </a>
+                <h3>{{ anime.title }}</h3>
+                <p>★ {{ anime.rating|floatformat:1 }}/10</p>
+            </div>
+            {% endfor %}
+        </div>
+    </section>
 {% endif %}
 
 {% endblock %}
