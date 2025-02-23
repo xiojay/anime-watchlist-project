@@ -1,0 +1,12 @@
+{% extends 'base.html' %}
+{% block content %}
+<section class="auth-container">
+    <h1>Edit Your Review</h1>
+    <form method="POST">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit" class="btn-auth">Update Review</button>
+    </form>
+    <a href="{% url 'anime-detail' review.anime.id %}" class="btn-cancel">Cancel</a>
+</section>
+{% endblock %}

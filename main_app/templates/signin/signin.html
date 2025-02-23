@@ -8,6 +8,18 @@
 {% block content %}
 <section class="auth-container">
     <h1>Sign In</h1>
+    {% if form.errors %}
+    <div class="error-messages">
+        <ul>
+            {% for field, errors in form.errors.items %}
+                {% for error in errors %}
+                    <li class="error-text">{{ error }}</li>
+                {% endfor %}
+            {% endfor %}
+        </ul>
+    </div>
+    {% endif %}
+
     <form method="POST" class="auth-form">
         {% csrf_token %}
         <div class="form-group">
@@ -20,6 +32,7 @@
         </div>
         <button type="submit" class="btn-auth">Sign In</button>
     </form>
+    
     <p class="auth-footer">Don't have an account? <a href="{% url 'signup' %}">Sign Up</a></p>
 </section>
 {% endblock %}

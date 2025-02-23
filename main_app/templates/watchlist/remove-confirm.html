@@ -1,0 +1,11 @@
+{% extends 'base.html' %}
+{% block content %}
+<section class="remove-container">
+    <h2>Remove {{ anime.title }} from your watchlist?</h2>
+    <form method="POST">
+        {% csrf_token %}
+        <button type="submit" class="btn-delete">Confirm</button>
+    </form>
+    <a href="{% url 'anime-detail' anime.id %}" class="btn-secondary">Cancel</a>
+</section>
+{% endblock %}

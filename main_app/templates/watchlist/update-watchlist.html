@@ -1,0 +1,12 @@
+{% extends 'base.html' %}
+{% block content %}
+<section class="update-container">
+    <h2>Update Watch Status for {{ anime.title }}</h2>
+    <form method="POST">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit" class="btn">Update</button>
+    </form>
+    <a href="{% url 'anime-detail' anime.id %}" class="btn-secondary">Cancel</a>
+</section>
+{% endblock %}

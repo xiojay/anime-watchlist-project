@@ -8,6 +8,19 @@
 {% block content %}
 <section class="auth-container">
     <h1>Sign Up</h1>
+
+    {% if form.errors %}
+    <div class="error-messages">
+        <ul>
+            {% for field, errors in form.errors.items %}
+                {% for error in errors %}
+                    <li class="error-text">{{ error }}</li>
+                {% endfor %}
+            {% endfor %}
+        </ul>
+    </div>
+    {% endif %}
+
     <form method="POST" class="auth-form">
         {% csrf_token %}
         <div class="form-group">

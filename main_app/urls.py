@@ -14,7 +14,18 @@ urlpatterns = [
 
     # authentication
     path('signin/', views.signin, name='signin'), 
-    path('signup/', views.signup, name='signup'),  
+    path('signup/', views.signup, name='signup'),
+    path('logout/', views.logout_view, name='logout'),
+
+
+    path("shows/<int:anime_id>/", views.anime_detail, name="anime-detail"),
+    path('shows/<int:anime_id>/review/', views.add_review, name='add-review'),
+    path("reviews/<int:review_id>/edit/", views.edit_review, name="edit-review"),
+    path("reviews/<int:review_id>/delete/", views.delete_review, name="delete-review"),
+
+    path('shows/<int:anime_id>/add/', views.add_to_watchlist, name='add-to-watchlist'),
+    path('shows/<int:anime_id>/update/', views.update_watchlist, name='update-watchlist'),
+    path('shows/<int:anime_id>/remove/', views.remove_from_watchlist, name='remove-from-watchlist'),
 ]
 
 if settings.DEBUG:
