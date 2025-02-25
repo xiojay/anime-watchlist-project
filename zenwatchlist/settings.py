@@ -12,7 +12,7 @@ https://docs.djangoproject.com/en/5.1/ref/settings/
 
 from pathlib import Path
 from dotenv import load_dotenv
-import os  # Needed to work with file paths
+import os 
 import dj_database_url
 
 load_dotenv()
@@ -135,10 +135,7 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/5.1/howto/static-files/
 
 STATIC_URL = '/static/'
-STATICFILES_DIRS = [
-    BASE_DIR / "main_app/static", 
-    os.path.join(BASE_DIR, 'static')
-]
+
 STATIC_ROOT = BASE_DIR / "staticfiles"
 
 
