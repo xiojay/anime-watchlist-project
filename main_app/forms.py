@@ -44,5 +44,5 @@ class WatchlistForm(forms.ModelForm):
         model = Watchlist
         fields = ['status']
         widgets = {
-            'status': forms.Select(choices=Watchlist.STATUS_CHOICES)
+            'status': forms.Select(choices=Watchlist.STATUS_CHOICES, attrs={'class': 'watchlist-dropdown'}),
         }

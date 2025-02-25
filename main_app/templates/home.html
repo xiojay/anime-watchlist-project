@@ -10,51 +10,30 @@
 <section class="hero">
     <div class="hero-content">
         <h1 class="app-name">zen</h1>
-        <p class="motto">track, explore, discover</p>
-
         {% if not user.is_authenticated %}
-        <div class="hero-buttons">
-            <a href="{% url 'signup' %}" class="btn signup">Sign Up</a>
-            <a href="{% url 'signin' %}" class="btn signin">Sign In</a>
-        </div>
+            <p class="motto">track, explore, discover</p>
+            <div class="hero-buttons">
+                <a href="{% url 'signup' %}" class="btn signup">Sign Up</a>
+                <a href="{% url 'signin' %}" class="btn signin">Sign In</a>
+            </div>
         {% endif %}
     </div>
 </section>
 
-{% if user.is_authenticated %}
-    <section class="user-watchlist">
-        <h2>Your Watchlist</h2>
-        {% if watchlist_items %}
-            <div class="anime-container">
-                {% for item in watchlist_items %}
-                <div class="anime-card">
-                    <a href="{% url 'anime-detail' item.anime.id %}">
-                        <img src="{% if anime.images_url %}{{ anime.images_utl.url }}{% else %}{% static 'images/placeholder.png' %}{% endif %}" alt="{{ item.anime.title }} cover">
-                    </a>
-                    <h3>{{ item.anime.title }}</h3>
-                    <p>Status: <strong>{{ item.get_status_display }}</strong></p>
-                </div>
-                {% endfor %}
-            </div>
-        {% else %}
-            <p>You have no shows in your watchlist yet. <a href="{% url 'shows-index' %}">Browse Shows</a></p>
-        {% endif %}
-    </section>
-{% else %}
-    <section class="featured-shows">
-        <h2>Featured Shows</h2>
-        <div class="anime-container">
-            {% for anime in top_anime %}
-            <div class="anime-card">
-                <a href="{% url 'anime-detail' anime.id %}">
-                    <img src="{{ anime.images.url }}" alt="{{ anime.title }} cover">
-                </a>
-                <h3>{{ anime.title }}</h3>
-                <p>★ {{ anime.rating|floatformat:1 }}/10</p>
-            </div>
-            {% endfor %}
+<section class="featured-shows">
+    <h2>Featured Shows</h2>
+    <div class="anime-container">
+        {% for anime in top_anime %}
+        <div class="anime-card">
+            <a href="{% url 'anime-detail' anime.id %}">
+                <img src="{% if anime.image_url %}{{ anime.image_url.url }}{% else %}{% static 'images/placeholder.png' %}{% endif %}" 
+                alt="{{ anime.title }} cover">
+            </a>
+            <h3>{{ anime.title }}</h3>
+            <p>★ {{ anime.rating|floatformat:1 }}/10</p>
         </div>
-    </section>
-{% endif %}
+        {% endfor %}
+    </div>
+</section>
 
 {% endblock %}

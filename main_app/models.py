@@ -65,9 +65,18 @@ class Review(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     content = models.TextField()
     rating = models.IntegerField(default=5)  
+    likes = models.ManyToManyField(User, related_name="liked_reviews", blank=True)
+    dislikes = models.ManyToManyField(User, related_name="disliked_reviews", blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
 
+    def total_likes(self):
+        return self.likes.count()
+
+    def total_dislikes(self):
+        return self.dislikes.count()
+    
     class Meta:
+        unique_together = ('anime', 'user'),
         ordering = ["-created_at"] 
 
     def __str__(self):

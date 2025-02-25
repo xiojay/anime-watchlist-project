@@ -24,27 +24,37 @@
     
     <p><strong>Overall Rating:</strong> <span class="rating-badge"> ★ {{ anime.rating|floatformat:1 }}/10</span></p>
 
-{% if user.is_authenticated %}
-<div class="watchlist-section">
-    {% if watchlist_entry %}
-        <form action="{% url 'remove-watchlist' anime.id %}" method="post">
-            {% csrf_token %}
-            <button type="submit" class="btn-delete">Remove from Watchlist</button>
-        </form>
+    {% if user.is_authenticated %}
+    <div class="watchlist-section">
+        {% if watchlist_entry %}
+            <form action="{% url 'update-watchlist' anime.id %}" method="post">
+                {% csrf_token %}
+                <label for="status"><strong>Status:</strong></label>
+                <select name="status" class="watchlist-dropdown" onchange="this.form.submit()">
+                    {% for choice in watchlist_form.fields.status.choices %}
+                        <option value="{{ choice.0 }}" {% if watchlist_entry.status == choice.0 %}selected{% endif %}>
+                            {{ choice.1 }}
+                        </option>
+                    {% endfor %}
+                </select>
+                <noscript><button type="submit" class="btn">Update Status</button></noscript>
+            </form>
+            <form action="{% url 'remove-watchlist' anime.id %}" method="post">
+                {% csrf_token %}
+                <button type="submit" class="btn-delete">Remove from Watchlist</button>
+            </form>
+        {% else %}
+            <form action="{% url 'add-watchlist' anime.id %}" method="post">
+                {% csrf_token %}
+                <button type="submit" class="btn">Add to Watchlist</button>
+            </form>
+        {% endif %}
+    </div>
     {% else %}
-        <form action="{% url 'add-watchlist' anime.id %}" method="post">
-            {% csrf_token %}
-            <button type="submit" class="btn">Add to Watchlist</button>
-        </form>
+    <p><a href="{% url 'signin' %}">Sign in</a> to add this to your watchlist.</p>
     {% endif %}
-</div>
-{% else %}
-<p><a href="{% url 'signin' %}">Sign in</a> to add this to your watchlist.</p>
-{% endif %}
-
-<a href="{% url 'shows-index' %}" class="btn">Back to Shows</a>
-  </div>
-</section>
+    
+    <a href="{% url 'shows-index' %}" class="btn">Back to Shows</a>
 
 <section class="reviews-container">
     <h2>User Reviews</h2>
@@ -60,11 +70,30 @@
                 <p class="review-text">{{ review.content }}</p>
 
                 <div class="review-actions">
-                    {% if request.user == review.user %}
-                        <a href="{% url 'edit-review' review.id %}" class="btn-edit">Edit</a>
-                        <a href="{% url 'delete-review' review.id %}" class="btn-delete">Delete</a>
-                    {% endif %}
-                </div>
+    {% if user.is_authenticated %}
+        <form action="{% url 'like-review' review.id %}" method="post">
+            {% csrf_token %}
+            <button type="submit" class="like-btn {% if user in review.likes.all %}liked{% endif %}">
+                ❤️ <span class="like-count">{{ review.likes.count }}</span>
+            </button>
+        </form>
+
+        <form action="{% url 'dislike-review' review.id %}" method="post">
+            {% csrf_token %}
+            <button type="submit" class="dislike-btn {% if user in review.dislikes.all %}disliked{% endif %}">
+                💔 <span class="dislike-count">{{ review.dislikes.count }}</span>
+            </button>
+        </form>
+    {% else %}
+        <p>❤️ {{ review.likes.count }} | 💔 {{ review.dislikes.count }}</p>
+        <p><a href="{% url 'signin' %}">Sign in</a> to like or dislike reviews.</p>
+    {% endif %}
+
+    {% if request.user == review.user %}
+        <a href="{% url 'edit-review' review.id %}" class="btn-edit">Edit</a>
+        <a href="{% url 'delete-review' review.id %}" class="btn-delete">Delete</a>
+    {% endif %}
+</div>
             </div>
         {% endfor %}
     {% else %}
@@ -73,9 +102,13 @@
 </section>
 
 {% if user.is_authenticated %}
-    <section class="write-review">
-        <a href="{% url 'add-review' anime.id %}" class="btn-review">✍️ Write a Review</a>
-    </section>
+    {% if user_review %}
+        <p>You have already reviewed this anime. <a href="{% url 'edit-review' user_review.id %}">Edit your review</a></p>
+    {% else %}
+        <section class="write-review">
+            <a href="{% url 'add-review' anime.id %}" class="btn-review">Write a Review</a>
+        </section>
+    {% endif %}
 {% else %}
     <p><a href="{% url 'signin' %}">Sign in</a> or <a href="{% url 'signup' %}">Sign up</a> to leave a review.</p>
 {% endif %}

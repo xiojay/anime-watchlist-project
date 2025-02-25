@@ -1,5 +1,6 @@
 from django.shortcuts import get_object_or_404, render, redirect
 from django.views.generic.edit import CreateView
+from django.contrib.auth.models import User
 from django.contrib.auth import login, logout
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import AuthenticationForm
@@ -20,6 +21,15 @@ def home(request):
         'watchlist_items': watchlist_items
     })
 
+def user_profile(request, user_id):
+    user = get_object_or_404(User, id=user_id)
+    watchlist_items = Watchlist.objects.filter(user=user)
+
+    return render(request, 'profile/user-profile.html', {
+        'profile_user': user,
+        'watchlist_items': watchlist_items,
+    })
+
 def about(request):
     return render(request, 'about.html')
 
@@ -31,15 +41,23 @@ def shows_index(request):
     return render(request, 'shows/index.html', {'shows': shows, 'query': query})
 
 def anime_detail(request, anime_id):
-    """Display anime details, reviews, and watchlist status"""
     anime = get_object_or_404(Anime, id=anime_id)
     reviews = anime.reviews.all()
-    watchlist_entry = Watchlist.objects.filter(user=request.user, anime=anime).first() if request.user.is_authenticated else None
+    watchlist_entry = None
+    watchlist_form = None
+    user_review = None
+
+    if request.user.is_authenticated:
+        watchlist_entry = Watchlist.objects.filter(user=request.user, anime=anime).first()
+        watchlist_form = WatchlistForm(instance=watchlist_entry)
+        user_review = Review.objects.filter(anime=anime, user=request.user).first()
 
     return render(request, "shows/details.html", {
         "anime": anime, 
         "reviews": reviews, 
-        "watchlist_entry": watchlist_entry
+        "watchlist_entry": watchlist_entry,
+        "watchlist_form": watchlist_form,
+        "user_review": user_review,
     })
 
 class AnimeCreate(CreateView):
@@ -79,22 +97,29 @@ def logout_view(request):
 
 @login_required
 def add_review(request, anime_id):
-    """Add a review to an anime"""
+    """Add a review to an anime, preventing duplicate reviews"""
     anime = get_object_or_404(Anime, id=anime_id)
+    existing_review = Review.objects.filter(anime=anime, user=request.user).exists()
+    if existing_review:
+        messages.error(request, "You have already reviewed this anime.")
+        return redirect("anime-detail", anime_id=anime.id)
 
-    if request.method == 'POST':
+    if request.method == "POST":
         form = ReviewForm(request.POST)
         if form.is_valid():
             review = form.save(commit=False)
             review.anime = anime
-            review.user = request.user 
+            review.user = request.user
             review.save()
-            messages.success(request, "Your review has been added!")  
-            return redirect('anime-detail', anime_id=anime.id)
+            anime.update_rating()
+            messages.success(request, "Your review has been successfully added!")
+            return redirect("anime-detail", anime_id=anime.id)
+        else:
+            messages.error(request, "There was an issue adding your review. Please try again.")
     else:
         form = ReviewForm()
 
-    return render(request, 'reviews/review.html', {'form': form, 'anime': anime})
+    return render(request, "reviews/review.html", {"form": form, "anime": anime})
 
 @login_required
 def edit_review(request, review_id):
@@ -114,7 +139,7 @@ def edit_review(request, review_id):
     else:
         form = ReviewForm(instance=review)
 
-    return render(request, "reviews/edit_review.html", {"form": form, "review": review})
+    return render(request, "reviews/edit-review.html", {"form": form, "review": review})
 
 @login_required
 def delete_review(request, review_id):
@@ -131,6 +156,31 @@ def delete_review(request, review_id):
     return redirect("anime-detail", anime_id=review.anime.id)
 
 @login_required
+def like_review(request, review_id):
+    review = get_object_or_404(Review, id=review_id)
+    
+    if request.user in review.likes.all():
+        review.likes.remove(request.user)
+    else:
+        review.likes.add(request.user)
+        review.dislikes.remove(request.user) 
+
+    return redirect('anime-detail', review.anime.id)
+
+@login_required
+def dislike_review(request, review_id):
+    review = get_object_or_404(Review, id=review_id)
+
+    if request.user in review.dislikes.all():
+        review.dislikes.remove(request.user)
+    else:
+        review.dislikes.add(request.user)
+        review.likes.remove(request.user)
+        
+    return redirect('anime-detail', review.anime.id)
+
+
+@login_required
 def add_to_watchlist(request, anime_id):
     """Add anime to watchlist and reload the same page"""
     anime = get_object_or_404(Anime, id=anime_id)
@@ -140,28 +190,28 @@ def add_to_watchlist(request, anime_id):
 
 @login_required
 def remove_from_watchlist(request, anime_id):
-    """Remove anime from watchlist and reload the same page"""
+    """Remove anime from watchlist and reload the watchlist page"""
     watchlist_entry = get_object_or_404(Watchlist, user=request.user, anime_id=anime_id)
-    anime = watchlist_entry.anime  # ✅ Define anime before redirect
+    anime = watchlist_entry.anime  
     watchlist_entry.delete()
     messages.success(request, f"{anime.title} removed from your watchlist.")  
-    return redirect('anime-detail', anime_id=anime.id) 
+    return redirect('watchlist') 
+
 
 @login_required
 def update_watchlist(request, anime_id):
-    """Update anime watchlist status"""
+    """Update watchlist status without dropdown"""
     watchlist_entry = get_object_or_404(Watchlist, user=request.user, anime_id=anime_id)
 
-    if request.method == 'POST':
-        form = WatchlistForm(request.POST, instance=watchlist_entry)
-        if form.is_valid():
-            form.save()
-            messages.success(request, "Watchlist status updated!")  
-            return redirect('anime-detail', anime_id=anime_id)
-    else:
-        form = WatchlistForm(instance=watchlist_entry)
+    if request.method == "POST":
+        new_status = request.POST.get("status", watchlist_entry.status)  
+        watchlist_entry.status = new_status
+        watchlist_entry.save()
+        messages.success(request, "Watchlist status updated!")  
+        return redirect("watchlist")  
 
-    return render(request, 'watchlist/update_watchlist.html', {'form': form, 'anime': watchlist_entry.anime})
+    return render(request, "watchlist/update_watchlist.html", {"anime": watchlist_entry.anime})
+
 
 @login_required
 def watchlist(request):

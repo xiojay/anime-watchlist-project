@@ -1,0 +1,37 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block head %}
+<link rel="stylesheet" href="{% static 'css/profile/profile.css' %}" />
+{% endblock %}
+
+{% block content %}
+<section class="profile-section">
+    <h1 class="username">Welcome, {{ user.username }}!</h1>
+
+    <h2>Your Watchlist</h2>
+    {% if watchlist_items %}
+        <div class="profile-container">
+            {% for item in watchlist_items %}
+            <div class="profile-card">
+                <img src="{% if item.anime.image_url %}{{ item.anime.image_url.url }}{% else %}{% static 'images/placeholder.png' %}{% endif %}" 
+                alt="{{ item.anime.title }} cover" class="profile-img">
+
+                <h3>{{ item.anime.title }}</h3>
+                <p><strong>Status:</strong></p>
+                <form action="{% url 'update-watchlist' item.anime.id %}" method="post" class="status-dropdown">
+                    {% csrf_token %}
+                    <select name="status" class="status-select" onchange="this.form.submit()">
+                        <option value="watching" {% if item.status == "watching" %}selected{% endif %}>Watching</option>
+                        <option value="completed" {% if item.status == "completed" %}selected{% endif %}>Completed</option>
+                        <option value="dropped" {% if item.status == "dropped" %}selected{% endif %}>Dropped</option>
+                    </select>
+                </form>
+            </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <p>No shows in your watchlist yet. <a href="{% url 'shows-index' %}">Browse Shows</a></p>
+    {% endif %}
+</section>
+{% endblock %}

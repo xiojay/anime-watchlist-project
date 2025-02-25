@@ -14,7 +14,7 @@
         <ul>
             {% for field, errors in form.errors.items %}
                 {% for error in errors %}
-                    <li class="error-text">{{ error }}</li>
+                    <p class="error-text">{{ error }}</p>
                 {% endfor %}
             {% endfor %}
         </ul>
