@@ -5,7 +5,8 @@
 Zen Anime Watchlist is a Django application that allows users to create a personalized watchlist of their favorite anime, write and manage reviews, and interact with other users through likes and dislikes on reviews. 
 
 ## Features
-- User authentication (Sign Up, Sign In, Logout)  
+- User authentication (Sign Up, Sign In, Logout)
+- Update username, email, and password  
 - Personalized watchlist with status updates (Watched,  Complete, Dropped) 
 - Add, edit, and delete reviews  
 - Like and dislike reviews   
@@ -22,7 +23,7 @@ Zen Anime Watchlist is a Django application that allows users to create a person
 
 
 ## Future Enhancements 
-- Add user avatars and profile customization.
+- Add user avatars and more features to customize profile. 
 - Expand social features (comment on reviews, follow users).
 - API integration to obtain anime details from external sources.
 - Create custom watchlists.

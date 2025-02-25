@@ -9,29 +9,36 @@
 <section class="profile-section">
     <h1 class="username">Welcome, {{ user.username }}!</h1>
 
-    <h2>Your Watchlist</h2>
-    {% if watchlist_items %}
-        <div class="profile-container">
-            {% for item in watchlist_items %}
-            <div class="profile-card">
-                <img src="{% if item.anime.image_url %}{{ item.anime.image_url.url }}{% else %}{% static 'images/placeholder.png' %}{% endif %}" 
-                alt="{{ item.anime.title }} cover" class="profile-img">
+    <h2>Update Your Profile</h2>
+    
+    <div class="profile-container">
+        <form action="{% url 'update-profile' %}" method="post" class="profile-form">
+            {% csrf_token %}
+            
+            <label for="id_username">New Username:</label>
+            <input type="text" name="username" id="id_username" value="{{ user.username }}" required>
 
-                <h3>{{ item.anime.title }}</h3>
-                <p><strong>Status:</strong></p>
-                <form action="{% url 'update-watchlist' item.anime.id %}" method="post" class="status-dropdown">
-                    {% csrf_token %}
-                    <select name="status" class="status-select" onchange="this.form.submit()">
-                        <option value="watching" {% if item.status == "watching" %}selected{% endif %}>Watching</option>
-                        <option value="completed" {% if item.status == "completed" %}selected{% endif %}>Completed</option>
-                        <option value="dropped" {% if item.status == "dropped" %}selected{% endif %}>Dropped</option>
-                    </select>
-                </form>
-            </div>
-            {% endfor %}
-        </div>
-    {% else %}
-        <p>No shows in your watchlist yet. <a href="{% url 'shows-index' %}">Browse Shows</a></p>
-    {% endif %}
+            <label for="id_email">New Email:</label>
+            <input type="email" name="email" id="id_email" value="{{ user.email }}" required>
+
+            <button type="submit" class="btn-save">Save Changes</button>
+        </form>
+
+        <h2>Change Password</h2>
+        <form action="{% url 'change-password' %}" method="post" class="profile-form">
+            {% csrf_token %}
+            
+            <label for="id_old_password">Current Password:</label>
+            <input type="password" name="old_password" id="id_old_password" required>
+
+            <label for="id_new_password">New Password:</label>
+            <input type="password" name="new_password" id="id_new_password" required>
+
+            <label for="id_confirm_password">Confirm New Password:</label>
+            <input type="password" name="confirm_password" id="id_confirm_password" required>
+
+            <button type="submit" class="btn-save">Update Password</button>
+        </form>
+    </div>
 </section>
 {% endblock %}

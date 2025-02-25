@@ -2,13 +2,18 @@
 {% load static %}
 
 {% block content %}
+<link rel="stylesheet" href="{% static 'css/reviews/review.css' %}" />
+
 <section class="review-container">
     <h1>Write a Review for {{ anime.title }}</h1>
+
     <form method="POST">
         {% csrf_token %}
         {{ form.as_p }}
-        <button type="submit">Submit Review</button>
+
+        <button type="submit" class="btn-auth">Submit Review</button>
     </form>
-    <a href="{% url 'anime-detail' anime.id %}">Back to {{ anime.title }}</a>
+
+    <a href="{% url 'anime-detail' anime.id %}" class="btn-cancel">Back to {{ anime.title }}</a>
 </section>
 {% endblock %}

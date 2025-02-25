@@ -2,11 +2,14 @@ from django.urls import path
 from django.conf import settings
 from django.conf.urls.static import static
 from . import views  
+from .views import update_profile, change_password
 
 urlpatterns = [
     path('', views.home, name='home'),
     path('about/', views.about, name='about'),
     path('profile/<int:user_id>/', views.user_profile, name='user-profile'),
+    path('profile/update/', update_profile, name='update-profile'),
+    path('profile/change-password/', change_password, name='change-password'),
 
     path('shows/', views.shows_index, name='shows-index'),
     path('shows/create/', views.AnimeCreate.as_view(), name='show-create'), 

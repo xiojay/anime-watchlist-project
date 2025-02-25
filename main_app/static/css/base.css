@@ -47,11 +47,17 @@ body.dark-theme {
     padding: 20px;
 }
 
-.username {
+.nav-left .username-link {
     font-size: 18px;
-    color: #bbb; 
+    color: #bbb;
     font-weight: bold;
     margin-left: 15px;  
+    text-decoration: none; 
+    transition: color 0.3s;
+}
+
+.username-link:hover {
+    color: #38caff;
 }
 
 .card {

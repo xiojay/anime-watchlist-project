@@ -19,7 +19,7 @@
                     <img src="{% static 'images/z-logo.svg' %}" alt="ZeN Logo" class="nav-logo">
                 </a>
                 {% if user.is_authenticated %}
-                <span class="username">{{ user.username }}!</span>
+                    <a href="{% url 'user-profile' user.id %}" class="username-link">{{ user.username }}!</a>
                 {% endif %}
             </div>
             

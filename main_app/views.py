@@ -5,6 +5,7 @@ from django.contrib.auth import login, logout
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import AuthenticationForm
 from django.contrib import messages
+from django.contrib.auth import update_session_auth_hash
 from .models import Anime, Review, Watchlist
 from .forms import ReviewForm, CustomUserCreationForm, WatchlistForm
 
@@ -21,14 +22,57 @@ def home(request):
         'watchlist_items': watchlist_items
     })
 
+@login_required
 def user_profile(request, user_id):
-    user = get_object_or_404(User, id=user_id)
-    watchlist_items = Watchlist.objects.filter(user=user)
+    """Render user profile page"""
+    if request.user.id != user_id:
+        return redirect('home') 
+    return render(request, "profile/user-profile.html")
 
-    return render(request, 'profile/user-profile.html', {
-        'profile_user': user,
-        'watchlist_items': watchlist_items,
-    })
+@login_required
+def update_profile(request):
+    """Update user profile (username & email)"""
+    if request.method == "POST":
+        new_username = request.POST.get("username").strip()
+        new_email = request.POST.get("email").strip()
+
+        if User.objects.exclude(id=request.user.id).filter(username=new_username).exists():
+            messages.error(request, "This username is already taken. Please choose another.")
+            return redirect("update-profile")
+
+        request.user.username = new_username
+        request.user.email = new_email
+        request.user.save()
+
+        messages.success(request, "Your profile has been updated successfully!")
+        return redirect("update-profile")
+
+    return render(request, "profile/user-profile.html")
+
+@login_required
+def change_password(request):
+    """Allow user to change their password"""
+    if request.method == "POST":
+        old_password = request.POST.get("old_password")
+        new_password = request.POST.get("new_password")
+        confirm_password = request.POST.get("confirm_password")
+
+        if not request.user.check_password(old_password):
+            messages.error(request, "Incorrect current password.")
+            return redirect("change-password")
+
+        if new_password != confirm_password:
+            messages.error(request, "New passwords do not match.")
+            return redirect("change-password")
+
+        request.user.set_password(new_password)
+        request.user.save()
+        update_session_auth_hash(request, request.user) 
+
+        messages.success(request, "Your password has been updated successfully!")
+        return redirect("update-profile")
+
+    return render(request, "profile/user-profile.html")
 
 def about(request):
     return render(request, 'about.html')
