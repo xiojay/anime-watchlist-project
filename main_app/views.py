@@ -252,7 +252,7 @@ def update_watchlist(request, anime_id):
         watchlist_entry.status = new_status
         watchlist_entry.save()
         messages.success(request, "Watchlist status updated!")  
-        return redirect("watchlist")  
+        return redirect("anime-detail", anime_id=anime_id)  
 
     return render(request, "watchlist/update_watchlist.html", {"anime": watchlist_entry.anime})
 
