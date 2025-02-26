@@ -18,7 +18,7 @@ Zen Anime Watchlist is a Django application that allows users to create a person
 - **Database**: PostgreSQL
 
 ## Links
- - [Deployed Site](zen)
+ - [Deployed Site](https://zen-watchlist-412d37994fcc.herokuapp.com/)
  - [Trello](https://trello.com/b/CyqegaRd/anime-watchlist)
 
 
